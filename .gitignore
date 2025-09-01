@@ -1,0 +1,10 @@
+# Ignore Maven build output
+/target/
+
+# Ignore IDE files
+*.class
+*.log
+.idea/
+*.iml
+*.DS_Store
+

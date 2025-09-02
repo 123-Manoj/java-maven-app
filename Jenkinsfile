@@ -27,11 +27,11 @@ pipeline {
 
         stage('Run Docker Container') {
             steps {
-                // Always remove any existing container with the same name
+                // Remove old container with same name (ignore if not exists)
                 bat 'docker rm -f %CONTAINER_NAME% || exit 0'
 
-                // Run new container on port 8080
-                bat 'docker run -d -p 8080:8080 --name %CONTAINER_NAME% %DOCKER_IMAGE%'
+                // Run new container on port 9090 (host) -> 8080 (container)
+                bat 'docker run -d -p 9090:8080 --name %CONTAINER_NAME% %DOCKER_IMAGE%'
             }
         }
     }

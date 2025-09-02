@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         DOCKER_IMAGE = "java-maven-app"
-        DOCKER_CONTAINER = "java-maven-container"
+        CONTAINER_NAME = "java-maven-container"
     }
 
     stages {
@@ -21,6 +21,18 @@ pipeline {
             }
         }
 
+        stage('Remove Old Container') {
+            steps {
+                bat 'docker rm -f %CONTAINER_NAME% || true'
+            }
+        }
+
+        stage('Remove Old Docker Image') {
+            steps {
+                bat 'docker rmi -f %DOCKER_IMAGE% || true'
+            }
+        }
+
         stage('Build Docker Image') {
             steps {
                 bat 'docker build -t %DOCKER_IMAGE% .'
@@ -29,13 +41,7 @@ pipeline {
 
         stage('Run Docker Container') {
             steps {
-                script {
-                    // Stop & remove container if it already exists
-                    bat "docker rm -f %DOCKER_CONTAINER% || true"
-
-                    // Run fresh container on port 8080
-                    bat "docker run -d -p 8080:8080 --name %DOCKER_CONTAINER% %DOCKER_IMAGE%"
-                }
+                bat 'docker run -d -p 8080:8080 --name %CONTAINER_NAME% %DOCKER_IMAGE%'
             }
         }
     }

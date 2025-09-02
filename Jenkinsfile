@@ -13,9 +13,9 @@ pipeline {
             }
         }
 
-        stage('Build with Maven') {
+       stage('Build with Maven') {
             steps {
-                bat 'mvn clean package'
+                bat '"C:\\Program Files\\Apache\\Maven\\maven-mvnd-1.0.2-windows-amd64\\bin\\mvnd.cmd" clean install'
             }
         }
 

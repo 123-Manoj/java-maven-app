@@ -14,28 +14,30 @@ pipeline {
             }
         }
 
-        stage('Build with Maven') {
+       stage('Build with Maven') {
             steps {
-                sh 'mvn clean install'
+                bat '"C:\\Program Files\\Apache\\Maven\\maven-mvnd-1.0.2-windows-amd64\\bin\\mvnd.cmd" clean install'
             }
         }
-
+    
         stage('Build Docker Image') {
             steps {
-                sh 'docker build -t $DOCKER_IMAGE .'
+                bat 'docker build -t %DOCKER_IMAGE% .'
             }
         }
 
         stage('Run Docker Container') {
             steps {
-                sh 'docker run -d --name java-maven-container $DOCKER_IMAGE'
+                bat 'docker run -d --name java-maven-container %DOCKER_IMAGE%'
             }
         }
     }
 
     post {
         always {
-            sh 'docker ps -a'
+            bat 'docker ps -a'
         }
     }
 }
+
+

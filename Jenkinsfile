@@ -27,14 +27,11 @@ pipeline {
 
         stage('Run Docker Container') {
             steps {
-                bat '''
-                REM === Find and stop containers using port 8080 ===
-                FOR /F "tokens=*" %%i IN ('docker ps -q --filter "publish=8080"') DO docker stop %%i
-                FOR /F "tokens=*" %%i IN ('docker ps -aq --filter "publish=8080"') DO docker rm %%i
+                // Always remove any existing container with the same name
+                bat 'docker rm -f %CONTAINER_NAME% || exit 0'
 
-                REM === Run new container ===
-                docker run -d -p 8080:8080 --name %CONTAINER_NAME% %DOCKER_IMAGE%
-                '''
+                // Run new container on port 8080
+                bat 'docker run -d -p 8080:8080 --name %CONTAINER_NAME% %DOCKER_IMAGE%'
             }
         }
     }

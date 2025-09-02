@@ -1,8 +1,8 @@
 # Use official Java 21 runtime
-FROM openjdk:21
+FROM openjdk:21-jdk-slim
 
 # Copy built JAR into container
-COPY target/java-maven-app-1.0-SNAPSHOT.jar app.jar
+COPY target/*.jar app.jar
 
 EXPOSE 8080
 

@@ -29,8 +29,13 @@ pipeline {
 
         stage('Run Docker Container') {
             steps {
-                bat 'docker rm -f %DOCKER_CONTAINER% || true'
-                bat 'docker run -d -p 8080:8080 --name %DOCKER_CONTAINER% %DOCKER_IMAGE%'
+                script {
+                    // Stop & remove container if it already exists
+                    bat "docker rm -f %DOCKER_CONTAINER% || true"
+
+                    // Run fresh container on port 8080
+                    bat "docker run -d -p 8080:8080 --name %DOCKER_CONTAINER% %DOCKER_IMAGE%"
+                }
             }
         }
     }

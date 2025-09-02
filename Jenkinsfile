@@ -21,22 +21,3 @@ pipeline {
         }
 
 
-        stage('Build Docker Image') {
-            steps {
-                bat 'docker build -t %DOCKER_IMAGE% .'
-            }
-        }
-
-        stage('Run Docker Container') {
-            steps {
-                bat 'docker run -d --name java-maven-container %DOCKER_IMAGE%'
-            }
-        }
-    }
-
-    post {
-        always {
-            bat 'docker ps -a'
-        }
-    }
-}

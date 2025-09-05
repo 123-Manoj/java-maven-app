@@ -4,8 +4,6 @@ pipeline {
     environment {
         DOCKER_IMAGE = 'java-maven-app'
         CONTAINER_NAME = 'java-maven-container'
-        HOST_PORT = '9090'
-        CONTAINER_PORT = '8080'
     }
 
     stages {
@@ -29,24 +27,18 @@ pipeline {
 
         stage('Run Docker Container') {
             steps {
-                // Remove old container
+                // Remove old container (ignore errors if not exists)
                 bat 'docker rm -f %CONTAINER_NAME% || exit 0'
 
-                // Run new container
-                bat 'docker run -d -p %HOST_PORT%:%CONTAINER_PORT% --name %CONTAINER_NAME% %DOCKER_IMAGE%'
+                // Run new container (console app, no ports needed)
+                bat 'docker run -d --name %CONTAINER_NAME% %DOCKER_IMAGE%'
             }
         }
+    }
 
-        stage('Post-Deployment Info') {
-            steps {
-                bat '''
-                echo === Running Containers ===
-                docker ps -a
-
-                echo.
-                echo Application is running at: http://localhost:%HOST_PORT%
-                '''
-            }
+    post {
+        always {
+            echo 'Build finished. Use "docker logs -f java-maven-container" to view app output.'
         }
     }
 }

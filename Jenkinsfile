@@ -4,6 +4,8 @@ pipeline {
     environment {
         DOCKER_IMAGE = 'java-maven-app'
         CONTAINER_NAME = 'java-maven-container'
+        HOST_PORT = '9090'
+        APP_PORT = '8080'
     }
 
     stages {
@@ -15,7 +17,7 @@ pipeline {
 
         stage('Build with Maven') {
             steps {
-                bat '"C:\\Program Files\\Apache\\Maven\\maven-mvnd-1.0.2-windows-amd64\\bin\\mvnd.cmd" clean install'
+                bat '"C:\\Program Files\\Apache\\Maven\\maven-mvnd-1.0.2-windows-amd64\\bin\\mvnd.cmd" clean package -DskipTests'
             }
         }
 
@@ -27,18 +29,21 @@ pipeline {
 
         stage('Run Docker Container') {
             steps {
-                // Remove old container (ignore errors if not exists)
+                // Remove old container
                 bat 'docker rm -f %CONTAINER_NAME% || exit 0'
 
-                // Run new container (console app, no ports needed)
-                bat 'docker run -d --name %CONTAINER_NAME% %DOCKER_IMAGE%'
+                // Run new container on port 9090
+                bat 'docker run -d -p %HOST_PORT%:%APP_PORT% --name %CONTAINER_NAME% %DOCKER_IMAGE%'
             }
         }
     }
 
     post {
-        always {
-            echo 'Build finished. Use "docker logs -f java-maven-container" to view app output.'
+        success {
+            echo "✅ Application deployed! Access it at http://localhost:${env.HOST_PORT}"
+        }
+        failure {
+            echo "❌ Build/Deploy failed. Check Jenkins logs."
         }
     }
 }

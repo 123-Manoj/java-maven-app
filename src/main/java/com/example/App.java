@@ -1,13 +1,22 @@
 package com.example;
 
-public class App {
-    public static void main(String[] args) throws InterruptedException {
-        System.out.println("🚀 We are now able to run our App...!!");
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-        // Keep application running forever
-        while (true) {
-            System.out.println("✅ App is alive...");
-            Thread.sleep(10000); // sleep for 10 seconds
-        }
+@SpringBootApplication
+public class MyApp {
+    public static void main(String[] args) {
+        SpringApplication.run(MyApp.class, args);
+    }
+}
+
+@RestController
+class HelloController {
+
+    @GetMapping("/")
+    public String hello() {
+        return "🚀 App is alive on web via Jenkins + Docker! ✅";
     }
 }
